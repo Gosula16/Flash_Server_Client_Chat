@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithms</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h2 { color: #333; margin-top: 30px; }
+        pre { background: #f4f4f4; padding: 15px; border-left: 5px solid #333; overflow: auto; }
+        code { color: #c7254e; font-weight: bold; }
+        .section { margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+
+    <h1>Algorithms</h1>
+    <div class="navigation">
+        <a href="/chat">Back to Chat Room</a>
+    </div>    
+    <div class="section">
+        <h2>1. BFS (Breadth-First Search)</h2>
+        <pre><code>function BREADTH-FIRST-SEARCH(GRAPH):
+    NODE = INITIAL-STATE
+    FRONTIER = FIFO_QUEUE(NODE)
+    EXPLORED = {}
+
+    while not EMPTY(FRONTIER):
+        NODE = DEQUEUE(FRONTIER)
+        if GOAL-TEST(NODE.STATE): return PRINT-SOLUTION(NODE)
+
+        EXPLORED[NODE.STATE] = true
+        for CHILD in adjacent_nodes(NODE):
+            if CHILD.STATE not in EXPLORED or FRONTIER:
+                PARENT(CHILD) = NODE
+                ENQUEUE(CHILD, FRONTIER)
+
+function PRINT-SOLUTION(NODE):
+    if NODE.PARENT: PRINT-SOLUTION(NODE.PARENT)
+    print(NODE)
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>2. DFS (Depth-First Search)</h2>
+        <pre><code>function DEPTH-FIRST-SEARCH(GRAPH):
+    return RECURSIVE-DFS(INITIAL-STATE, GRAPH)
+
+function RECURSIVE-DFS(NODE, GRAPH):
+    if GOAL-TEST(NODE.STATE): return PRINT-SOLUTION(NODE)
+
+    for CHILD in adjacent_nodes(NODE):
+        if CHILD.STATE not in EXPLORED:
+            PARENT(CHILD) = NODE
+            RESULT = RECURSIVE-DFS(CHILD, GRAPH)
+            if RESULT != failure: return RESULT
+    return failure
+
+function PRINT-SOLUTION(NODE):
+    if NODE.PARENT: PRINT-SOLUTION(NODE.PARENT)
+    print(NODE)
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>3. IDDLS (Iterative Deepening Depth-Limited Search)</h2>
+        <pre><code>function ITERATIVE-DEEPENING-SEARCH(problem):
+    for DEPTH from 0 to ∞:
+        RESULT = DEPTH-LIMITED-SEARCH(problem, DEPTH)
+        if RESULT != cutoff: return RESULT
+
+function DEPTH-LIMITED-SEARCH(problem, LIMIT):
+    return RECURSIVE-DLS(INITIAL-STATE, problem, LIMIT)
+
+function RECURSIVE-DLS(NODE, problem, LIMIT):
+    if GOAL-TEST(NODE.STATE): return PRINT-SOLUTION(NODE)
+    if LIMIT == 0: return cutoff
+
+    for CHILD in adjacent_nodes(NODE):
+        RESULT = RECURSIVE-DLS(CHILD, problem, LIMIT-1)
+        if RESULT == cutoff: return cutoff
+        if RESULT != failure: return RESULT
+    return failure
+
+function PRINT-SOLUTION(NODE):
+    if NODE.PARENT: PRINT-SOLUTION(NODE.PARENT)
+    print(NODE)
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>4. GBFS (Greedy Best-First Search)</h2>
+        <pre><code>function A-STAR-SEARCH(GRAPH):
+    NODE = INITIAL-STATE
+    FRONTIER = PRIORITY_QUEUE(NODE, heuristic(NODE))
+
+    while not EMPTY(FRONTIER):
+        NODE = POP(FRONTIER)
+        if GOAL-TEST(NODE.STATE): return PRINT-SOLUTION(NODE)
+
+        for CHILD in adjacent_nodes(NODE):
+            CHILD.F = heuristic(CHILD)
+            if CHILD.STATE not in EXPLORED:
+                ENQUEUE(CHILD, FRONTIER)
+
+function PRINT-SOLUTION(NODE):
+    if NODE.PARENT: PRINT-SOLUTION(NODE.PARENT)
+    print(NODE)
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>5. A* Search</h2>
+        <pre><code>function A-STAR-SEARCH(GRAPH):
+    NODE = INITIAL-STATE
+    FRONTIER = PRIORITY_QUEUE(NODE, NODE.PATH-COST + heuristic(NODE))
+    EXPLORED = {}
+
+    while not EMPTY(FRONTIER):
+        NODE = POP(FRONTIER)
+        if GOAL-TEST(NODE.STATE): return PRINT-SOLUTION(NODE)
+
+        EXPLORED[NODE.STATE] = true
+        for CHILD in adjacent_nodes(NODE):
+            CHILD.PATH-COST = NODE.PATH-COST + EDGE_COST(NODE, CHILD)
+            CHILD.F = CHILD.PATH-COST + heuristic(CHILD)
+            if CHILD.STATE not in EXPLORED or FRONTIER:
+                ENQUEUE(CHILD, FRONTIER)
+
+function PRINT-SOLUTION(NODE):
+    if NODE.PARENT: PRINT-SOLUTION(NODE.PARENT)
+    print(NODE)
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>6. Genetic Algorithm</h2>
+        <pre><code>function GENETIC-ALGORITHM(POPULATION):
+    for INDIVIDUAL in POPULATION:
+        INDIVIDUAL.FITNESS = FITNESS-FUNCTION(INDIVIDUAL)
+
+    repeat:
+        NEW-POPULATION = []
+        for i in range(POPULATION.size // 2):
+            PARENT1, PARENT2 = RANDOM-SELECTION(POPULATION)
+            CHILD1, CHILD2 = REPRODUCE(PARENT1, PARENT2)
+            if RANDOM_PROBABILITY: CHILD1 = MUTATE(CHILD1)
+            if RANDOM_PROBABILITY: CHILD2 = MUTATE(CHILD2)
+            NEW-POPULATION.append(CHILD1, CHILD2)
+        POPULATION = NEW-POPULATION
+    return BEST(POPULATION)
+
+function FITNESS-FUNCTION(x):
+    FITNESS = 0
+    for i, j in combinations(x):
+        if x[i] != x[j] and abs(x[j] - x[i]) != j - i:
+            FITNESS += 1
+    return FITNESS
+
+function REPRODUCE(x, y):
+    c = random index
+    return (x[:c] + y[c:], y[:c] + x[c:])
+
+function MUTATE(x):
+    c = random index
+    x[c] = random_value
+    return x
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>7. Alpha-Beta Pruning (for Tic-Tac-Toe)</h2>
+        <pre><code>function ALPHA-BETA-FOR-TICTACTOE():
+    GRAPH = CONSTRUCT-GRAPH()
+    v = MAX-VALUE(INIT-STATE, GRAPH, -∞, +∞)
+    return ACTION(v)
+
+function MAX-VALUE(state, α, β):
+    if TERMINAL-TEST(state): return UTILITY(state)
+    v = -∞
+    for action in ACTIONS(state):
+        v = MAX(v, MIN-VALUE(RESULT(state, action), α, β))
+        if v >= β: return v
+        α = MAX(α, v)
+    return v
+
+function MIN-VALUE(state, α, β):
+    if TERMINAL-TEST(state): return UTILITY(state)
+    v = +∞
+    for action in ACTIONS(state):
+        v = MIN(v, MAX-VALUE(RESULT(state, action), α, β))
+        if v <= α: return v
+        β = MIN(β, v)
+    return v
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>8. Backtracking (for CSP)</h2>
+        <pre><code>function BACKTRACKING-SEARCH(CSP):
+    ASSIGNMENT = INIT-ASSIGN(CSP.VARIABLES)
+    return BACKTRACK(ASSIGNMENT, CSP)
+
+function BACKTRACK(ASSIGNMENT, CSP):
+    if IS-COMPLETE(ASSIGNMENT): return ASSIGNMENT
+    VAR = SELECT-UNASSIGNED-VARIABLE(CSP)
+
+    for value in ORDER-DOMAIN-VALUES(VAR, ASSIGNMENT):
+        if IS-CONSISTENT(value, ASSIGNMENT):
+            ASSIGNMENT[VAR] = value
+            INFERENCES = INFERENCE(CSP, VAR, value)
+            if INFERENCES != failure:
+                RESULT = BACKTRACK(ASSIGNMENT, CSP)
+                if RESULT != failure: return RESULT
+            remove INFERENCES
+    return failure
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>9. Cryptarithmetic (All-Diff)</h2>
+        <pre><code>function solveCryptarithmetic(problem):
+    letters = extractUniqueLetters(problem)
+    usedDigits = [False] * 10
+    mapping = {}
+
+    if solve(letters, usedDigits, mapping, 0, problem):
+        printSolution(mapping)
+    else:
+        print("No solution found")
+
+function solve(letters, usedDigits, mapping, index, problem):
+    if index == len(letters): return isValid(mapping, problem)
+
+    for digit in range(10):
+        if not usedDigits[digit]:
+            usedDigits[digit] = True
+            mapping[letters[index]] = digit
+            if solve(letters, usedDigits, mapping, index + 1, problem): return True
+            usedDigits[digit] = False
+            mapping[letters[index]] = None
+    return False
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>12. Unification</h2>
+        <pre><code>function UNIFY(x, y, θ):
+    if θ = failure:
+        return failure
+    if x = y:
+        return θ
+    if VARIABLE(x):
+        return UNIFY-VAR(x, y, θ)
+    if VARIABLE(y):
+        return UNIFY-VAR(y, x, θ)
+    if COMPOUND(x) and COMPOUND(y):
+        return UNIFY(x.ARGS, y.ARGS, UNIFY(x.OP, y.OP, θ))
+    if LIST(x) and LIST(y):
+        return UNIFY(x.REST, y.REST, UNIFY(x.FIRST, y.FIRST, θ))
+    return failure
+
+function UNIFY-VAR(var, x, θ):
+    if {var/val} ∈ θ: return UNIFY(val, x, θ)
+    if {x/val} ∈ θ: return UNIFY(var, val, θ)
+    if OCCUR-CHECK(var, x): return failure
+    return add {var/x} to θ
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>FOL (First-Order Logic)</h2>
+        <ul>
+            <li>Identify objects and relations (e.g., people, kinship).</li>
+            <li>Define predicates and functions based on relationships.</li>
+            <li>Write the concept in plain language (informally describe).</li>
+            <li>Use quantifiers and variables to generalize (e.g., ∀, ∃, x, y).</li>
+            <li>Combine predicates with logical connectives (∧, ∨, ¬, ⇒, ⇔).</li>
+            <li>Ensure symmetry or inverse if required (e.g., Sibling, Parent-Child).</li>
+            <li>Express disjoint or functional definitions (e.g., Male ⇔ ¬Female).</li>
+        </ul>
+    </div>
+
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #007bff;
+        }
+        pre {
+            background-color: #282c34;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "Courier New", monospace;
+        }
+        .algorithm-section {
+            margin-bottom: 40px;
+        }
+        .algorithm-section h2 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Algorithm Code</h1>
+    
+    <div class="algorithm-section">
+        <h2>1. BFS (Breadth-First Search)</h2>
+        <pre><code>
+from collections import deque
+
+def bfs(graph, start, goal):
+    queue = deque([start])
+    explored = {start: None}
+    processed_nodes = [] 
+    while queue:
+        node = queue.popleft()
+        processed_nodes.append(node) 
+        print(f"Processing node: {node}") 
+        if node == goal:
+            path = []
+            while node is not None:
+                path.append(node)
+                node = explored[node]
+            return " -> ".join(reversed(path)), processed_nodes
+        for neighbor in graph.get(node, []):
+            if neighbor not in explored:
+                explored[neighbor] = node
+                queue.append(neighbor)
+
+    return "No path found", processed_nodes
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B', 'G'],
+    'E': ['B', 'H'],
+    'F': ['C', 'I'],
+    'G': ['D', 'J'],
+    'H': ['E', 'K'],
+    'I': ['F', 'K'],
+    'J': ['G', 'K'],
+    'K': ['H', 'I', 'J']
+}
+path, processed_nodes = bfs(graph, 'A', 'K')
+print(f"Shortest path from A to K: {path}")
+print(f"Processed nodes: {processed_nodes}")
+        </code></pre>
+    </div>
+
+    <div class="algorithm-section">
+        <h2>2. DFS (Depth-First Search)</h2>
+        <pre><code>
+def dfs(graph, start, goal):
+    stack = [start]
+    explored = {start: None}
+    processed_nodes = [] 
+
+    while stack:
+        node = stack.pop()
+        processed_nodes.append(node) 
+        print(f"Processing node: {node}") 
+
+        if node == goal:
+            path = []
+            while node is not None:
+                path.append(node)
+                node = explored[node]
+            return " -> ".join(reversed(path)), processed_nodes
+
+        for neighbor in graph.get(node, []):
+            if neighbor not in explored:
+                explored[neighbor] = node
+                stack.append(neighbor)
+
+    return "No path found", processed_nodes
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B', 'G'],
+    'E': ['B', 'H'],
+    'F': ['C', 'I'],
+    'G': ['D', 'J'],
+    'H': ['E', 'K'],
+    'I': ['F', 'K'],
+    'J': ['G', 'K'],
+    'K': ['H', 'I', 'J']
+}
+path, processed_nodes = dfs(graph, 'A', 'K')
+print(f"Path from A to K: {path}")
+print(f"Processed nodes: {processed_nodes}")
+        </code></pre>
+    </div>
+
+    <div class="algorithm-section">
+        <h2>3. IDDLS (Iterative Deepening Depth-First Search)</h2>
+        <pre><code>
+class PuzzleState:
+    def __init__(self, board, empty_tile_pos, moves=0):
+        self.board = board
+        self.empty_tile_pos = empty_tile_pos
+        self.moves = moves
+
+    def is_goal(self, goal_state):
+        return self.board == goal_state
+
+    def get_possible_moves(self):
+        row, col = self.empty_tile_pos
+        directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+        return [(row + dr, col + dc) for dr, dc in directions if 0 <= row + dr < 3 and 0 <= col + dc < 3]
+
+    def move_tile(self, new_empty_tile_pos):
+        new_row, new_col = new_empty_tile_pos
+        new_board = [list(row) for row in self.board]
+        new_board[self.empty_tile_pos[0]][self.empty_tile_pos[1]], new_board[new_row][new_col] = \
+            new_board[new_row][new_col], new_board[self.empty_tile_pos[0]][self.empty_tile_pos[1]]
+        return PuzzleState(new_board, new_empty_tile_pos)
+
+def DLS(state, goal_state, depth):
+    if state.is_goal(goal_state):
+        return state
+    if depth == 0:
+        return None
+    for new_empty_pos in state.get_possible_moves():
+        new_state = state.move_tile(new_empty_pos)
+        result = DLS(new_state, goal_state, depth - 1)
+        if result:
+            return result
+    return None
+
+def IDDLS(initial_board, goal_board):
+    empty_tile_pos = next((i, row.index(0)) for i, row in enumerate(initial_board) if 0 in row)
+    initial_state = PuzzleState(initial_board, empty_tile_pos)
+    depth = 0
+    while True:
+        result = DLS(initial_state, goal_board, depth)
+        if result:
+            return result, depth
+        depth += 1
+
+def print_board(board):
+    for row in board:
+        print(" ".join(map(str, row)))
+
+initial_state = [
+    [1, 2, 3],
+    [0, 4, 6],
+    [7, 5, 8]
+]
+
+goal_state = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 0]
+]
+
+solution, depth = IDDLS(initial_state, goal_state)
+if solution:
+    print(f"Solution found at depth: {depth}")
+    print_board(solution.board)
+else:
+    print("No path found")
+        </code></pre>
+    </div>
+
+    <div class="algorithm-section">
+        <h2>4. GBFS (Greedy Best-First Search)</h2>
+        <pre><code>
+graph = {
+    'a': [("c", 4), ("d", 1)],
+    'b': [("e", 3), ("f", 1)],
+    'c': [],
+    'd': [],
+    'e': [("h", 5)],
+    'f': [("i", 2), ("g", 3)],
+    'g': [],
+    'h': [],
+    'i': [],
+    "s": [("a", 3), ("b", 2)]
+}
+
+heuristic = {
+    "a": 12,
+    "b": 4,
+    "c": 7,
+    "d": 3,
+    "e": 8,
+    "f": 2,
+    "h": 4,
+    "i": 9,
+    "s": 13,
+    "g": 0
+}
+
+start_node = "s"
+goal_node = "g"
+path = [start_node]
+
+def search_goal(curr_node):
+    if curr_node == goal_node:
+        return True
+    max_heuristic = float('inf')
+    next_node = None
+    for neighbor, _ in graph[curr_node]:
+        if heuristic[neighbor] <= max_heuristic:
+            next_node = neighbor
+            max_heuristic = heuristic[neighbor]
+    if next_node:
+        path.append(next_node)
+        return search_goal(next_node)
+    return False
+
+def calculate_cost(path):
+    total_cost = 0
+    for i in range(len(path) - 1):
+        for neighbor, cost in graph[path[i]]:
+            if neighbor == path[i+1]:
+                total_cost += cost
+                break
+    return total_cost
+if search_goal(start_node):
+    print(f"Path: {' -> '.join(path)}")
+    cost = calculate_cost(path)
+    print(f"Cost: {cost}")
+else:
+    print("Goal node not reachable")
+        </code></pre>
+    </div>
+
+    <div class="algorithm-section">
+        <h2>5. A Star Search</h2>
+        <pre><code>
+from heapq import heappop, heappush
+def a_star_search(graph: dict, start: str, goal: str, heuristic_values: dict):
+    open_list, closed_list = [], set()
+    heappush(open_list, (0 + heuristic_values[start], start))
+    g_scores = {start: 0}
+    parent_map = {start: None}
+    
+    while open_list:
+        _, current = heappop(open_list)
+        if current == goal:
+            path = []
+            while current:
+                path.append(current)
+                current = parent_map[current]
+            return list(reversed(path)), g_scores[goal]
+        
+        closed_list.add(current)
+        for neighbor, cost in graph.get(current, []):
+            if neighbor in closed_list:
+                continue
+            tentative_g_score = g_scores[current] + cost
+            if neighbor not in g_scores or tentative_g_score < g_scores[neighbor]:
+                g_scores[neighbor] = tentative_g_score
+                priority = tentative_g_score + heuristic_values[neighbor]
+                heappush(open_list, (priority, neighbor))
+                parent_map[neighbor] = current
+    return None, None
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('A', 1), ('C', 2), ('D', 5)],
+    'C': [('A', 4), ('B', 2), ('D', 1)],
+    'D': [('B', 5), ('C', 1)],
+}
+
+heuristic_values = {'A': 7, 'B': 6, 'C': 2, 'D': 0}
+start = 'A'
+goal = 'D'
+
+path, cost = a_star_search(graph, start, goal, heuristic_values)
+if path:
+    print(f"Path: {' -> '.join(path)}")
+    print(f"Total cost: {cost}")
+else:
+    print("No path found")
+        </code></pre>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Coloring Problem</title>
+</head>
+<body>
+    <h1>Map Coloring Problem</h1>
+    <pre>
+        <code>
+from collections import deque
+
+def solve_map_coloring(graph, colors):
+    def backtrack(assignment):
+        if len(assignment) == len(graph):
+            return assignment
+        var = min((v for v in graph if v not in assignment), key=lambda v: len(domains[v]))
+        for value in domains[var]:
+            if all(assignment.get(nei) != value for nei in graph[var]):
+                assignment[var] = value
+                if backtrack(assignment):
+                    return assignment
+                del assignment[var]
+        return None
+
+    domains = {node: set(colors) for node in graph}
+    return backtrack({}) or "No solution exists for the given map."
+
+if __name__ == "__main__":
+    graph = {
+        'wa': {'nt', 'sa'}, 'nt': {'wa', 'sa', 'q'}, 'q': {'nt', 'sa', 'nsw'},
+        'nsw': {'q', 'sa', 'v'}, 'v': {'sa', 'nsw'}, 'sa': {'wa', 'nt', 'q', 'nsw', 'v'}, 't': set()
+    }
+    colors = {'Red', 'Green', 'Blue'}
+    solution = solve_map_coloring(graph, colors)
+
+    if isinstance(solution, dict):
+        print("Solution found:")
+        for region, color in solution.items():
+            print(f"{region.upper()}: {color}")
+    else:
+        print(solution)
+        </code>
+    </pre>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptarithmetic Problem</title>
+</head>
+<body>
+    <h1>Cryptarithmetic Problem</h1>
+    <pre>
+        <code>
+def solveCryptarithmetic(problem):
+    letters = extractUniqueLetters(problem)
+    usedDigits = [False] * 10
+    mapping = {letter: None for letter in letters}
+    
+    if solve(letters, usedDigits, mapping, 0, problem):
+        printSolution(mapping)
+    else:
+        print("No solution found")
+
+def solve(letters, usedDigits, mapping, index, problem):
+    if index == len(letters):
+        return isValid(mapping, problem)
+
+    for digit in range(10):
+        if not usedDigits[digit]:
+            usedDigits[digit] = True
+            mapping[letters[index]] = digit
+            
+            if solve(letters, usedDigits, mapping, index + 1, problem):
+                return True
+            
+            usedDigits[digit] = False
+            mapping[letters[index]] = None
+
+    return False
+
+def isValid(mapping, problem):
+    translated_problem = problem
+    for letter, digit in mapping.items():
+        translated_problem = translated_problem.replace(letter, str(digit))
+    
+    try:
+        return eval(translated_problem)
+    except Exception:
+        return False
+
+def extractUniqueLetters(problem):
+    return list(set(filter(str.isalpha, problem)))
+
+def printSolution(mapping):
+    print("Solution:")
+    for letter, digit in mapping.items():
+        print(f"{letter} -> {digit}")
+
+problem ="SEND+MORE==MONEY"
+solveCryptarithmetic(problem)
+        </code>
+    </pre>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOL Example</title>
+</head>
+<body>
+    <h1>FOL Example</h1>
+    <pre>
+        <code>
+class Constant:
+    def __init__(self, name):
+        self.name = str(name)
+        
+    def __repr__(self):
+        return self.name
+
+class Predicate:
+    def __init__(self, name, *args):
+        self.name = name
+        self.args = args
+        
+    def __repr__(self):
+        return f"{self.name}({', '.join(map(str, self.args))})"
+
+class Quantifier:
+    def __init__(self, quantifier, variable, statement):
+        self.quantifier = quantifier
+        self.variable = variable
+        self.statement = statement
+        
+    def __repr__(self):
+        return f"{self.quantifier}{self.variable} ({self.statement})"
+
+class LogicalConnective:
+    def __init__(self, connective, left, right):
+        self.connective = connective
+        self.left = left
+        self.right = right
+        
+    def __repr__(self):
+        return f"({self.left} {self.connective} {self.right})"
+
+
+Jack = Constant("Jack")
+Curiosity = Constant("Curiosity")
+Tuna = Constant("Tuna")
+
+def animal(y):
+    return Predicate("Animal", y)
+
+def loves(x, y):
+    return Predicate("Loves", x, y)
+
+def kills(x, y):
+    return Predicate("Kills", x, y)
+
+everyone_loves_animals = Quantifier("∀", "x",
+    LogicalConnective("→",
+        Quantifier("∀", "y", LogicalConnective("→", animal(Constant("y")), loves(Constant("x"), Constant("y")))),
+        Quantifier("∃", "z", loves(Constant("z"), Constant("x")))))
+
+anyone_kills_animal = Quantifier("∀", "x",
+    LogicalConnective("→",
+        Quantifier("∃", "y", LogicalConnective("∧", animal(Constant("y")), kills(Constant("x"), Constant("y")))),
+        Quantifier("∀", "z", Predicate("¬", loves(Constant("z"), Constant("x"))))))
+
+jack_loves_all_animals = Quantifier("∀", "y", loves(Jack, Constant("y")))
+
+either_jack_or_curiosity_killed = LogicalConnective("∨", kills(Jack, Tuna), kills(Curiosity, Tuna))
+
+did_curiosity_kill_cat = Predicate('¬', kills(Curiosity, Tuna))
+
+tunacatis_animal = Quantifier('∀','x', LogicalConnective('→', Predicate('Cat', Constant('x')), animal(Constant('x'))))
+
+print("1. Everyone who loves all animals is loved by someone:\n", everyone_loves_animals)
+print("2. Anyone who kills an animal is loved by no one:\n", anyone_kills_animal)
+print("3. Jack loves all animals:\n", jack_loves_all_animals)
+print("4. Either Jack or Curiosity killed the cat named Tuna:\n", either_jack_or_curiosity_killed)
+print("5. Did Curiosity kill the cat?\n", did_curiosity_kill_cat)
+print("6", Predicate('Cat', Constant('Tuna')))
+print("7", tunacatis_animal)
+        </code>
+    </pre>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unification Example</title>
+</head>
+<body>
+    <h1>Unification Example</h1>
+    <pre>
+        <code>
+import re
+
+def is_function(sentence):
+    match = re.match(r'(\w+)\((.*)\)', sentence)
+    if match:
+        function_name = match.group(1)
+        parameters = match.group(2).split(',')
+        return function_name, [param.strip() for param in parameters]
+    return None
+
+def replace_with_theta(value, theta):
+    while value in theta:
+        value = theta[value]
+    return value
+
+def unify_parameters(param1, param2, theta={}):
+    param1 = replace_with_theta(param1, theta)
+    param2 = replace_with_theta(param2, theta)
+
+    if param1 == param2:
+        return theta
+    elif is_variable(param1) and (not is_variable(param2) or is_function(param2)):
+        return unify_var(param1, param2, theta)
+    elif is_variable(param2) and (not is_variable(param1) or is_function(param1)):
+        return unify_var(param2, param1, theta)
+    elif is_function(param1) and is_function(param2):
+        name1, params1 = is_function(param1)
+        name2, params2 = is_function(param2)
+
+        if name1 != name2 or len(params1) != len(params2):
+            return "failure"
+
+        for p1, p2 in zip(params1, params2):
+            result = unify_parameters(p1, p2, theta)
+            if result == "failure":
+                return "failure"
+
+        for i in range(len(params1)):
+            if is_function(params1[i]) and is_function(params2[i]):
+                inner_theta = unify_parameters(params1[i], params2[i], theta)
+                if inner_theta == "failure":
+                    return "failure"
+                theta.update(inner_theta)
+
+        return theta
+
+    else:
+        return "failure"
+
+def is_variable(term):
+    return isinstance(term, str) and term[0].islower()
+
+theta = unify_parameters("cat(Tuna)", "cat(Tuna)")
+print(theta)
+
+theta = unify_parameters("cat(Tuna)", "cat(Milo)")
+print(theta)
+
+theta = unify_parameters("cat(Tuna)", "dog(Milo)")
+print(theta)
+        </code>
+    </pre>
+</body>
+</html>
+
